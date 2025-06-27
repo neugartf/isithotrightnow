@@ -1,0 +1,29 @@
+service: is-it-hot-right-now
+configValidationMode: off
+provider:
+  name: scaleway
+  # Global Environment variables - used in every functions
+  env:
+    test: test
+
+plugins:
+  - serverless-scaleway-functions
+package:
+  patterns:
+    - "!node_modules/**"
+    - "!.gitignore"
+    - "!.git/**"
+
+custom:
+  containers:
+    get-historical-orbs:
+      directory: container
+      port: 8080
+      memoryLimit: 1024
+      cpuLimit: 750
+      events:
+        - schedule:
+            rate: "0 6,12,18 * * *"
+      secret:
+        SCW_ACCESS_KEY: ${env:SCW_ACCESS_KEY}
+        SCW_SECRET_KEY: ${env:SCW_SECRET_KEY}
